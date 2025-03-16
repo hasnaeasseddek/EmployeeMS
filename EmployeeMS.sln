@@ -23,9 +23,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeMS.Domain", "Employ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeMS.Application", "EmployeeMS.Application\EmployeeMS.Application.csproj", "{1B705ED2-572C-4698-A11A-FAB42FA24AFF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrateKeycloak.MVC", "..\..\..\..\Downloads\IntegrateKeycloak (2)\IntegrateKeycloak\IntegrateKeycloak.MVC\IntegrateKeycloak.MVC.csproj", "{AE3AE427-15E7-4515-BD7E-5974923E2F05}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrateKeycloak.API", "..\..\..\..\Downloads\IntegrateKeycloak (2)\IntegrateKeycloak\IntegrateKeycloak.API\IntegrateKeycloak.API.csproj", "{94F57897-E8F2-4FC3-881E-B25AD0AFDC7B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrateKeycloak.API", "..\..\..\..\Downloads\IntegrateKeycloak (2)\IntegrateKeycloak\IntegrateKeycloak.API\IntegrateKeycloak.API.csproj", "{17586636-B7E1-461C-9380-6C11E2D162ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,14 +51,10 @@ Global
 		{1B705ED2-572C-4698-A11A-FAB42FA24AFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B705ED2-572C-4698-A11A-FAB42FA24AFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B705ED2-572C-4698-A11A-FAB42FA24AFF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AE3AE427-15E7-4515-BD7E-5974923E2F05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AE3AE427-15E7-4515-BD7E-5974923E2F05}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AE3AE427-15E7-4515-BD7E-5974923E2F05}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AE3AE427-15E7-4515-BD7E-5974923E2F05}.Release|Any CPU.Build.0 = Release|Any CPU
-		{94F57897-E8F2-4FC3-881E-B25AD0AFDC7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{94F57897-E8F2-4FC3-881E-B25AD0AFDC7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{94F57897-E8F2-4FC3-881E-B25AD0AFDC7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{94F57897-E8F2-4FC3-881E-B25AD0AFDC7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17586636-B7E1-461C-9380-6C11E2D162ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17586636-B7E1-461C-9380-6C11E2D162ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17586636-B7E1-461C-9380-6C11E2D162ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17586636-B7E1-461C-9380-6C11E2D162ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -75,7 +69,6 @@ Global
 		{37B39D81-BD8C-41A6-8600-E916E1CEA45B} = {6260CC14-D001-43C4-9D42-6DB0269149AB}
 		{D5744651-DE32-4B79-BB39-B7C088CEA126} = {26DF1F13-BC04-4DE7-B506-0E5994CEB2A4}
 		{1B705ED2-572C-4698-A11A-FAB42FA24AFF} = {26DF1F13-BC04-4DE7-B506-0E5994CEB2A4}
-		{AE3AE427-15E7-4515-BD7E-5974923E2F05} = {BFF2A669-78B1-4542-9607-0ABF9038B521}
-		{94F57897-E8F2-4FC3-881E-B25AD0AFDC7B} = {B89D8C27-1A26-4D2B-92BC-57507452022C}
+		{17586636-B7E1-461C-9380-6C11E2D162ED} = {B89D8C27-1A26-4D2B-92BC-57507452022C}
 	EndGlobalSection
 EndGlobal
