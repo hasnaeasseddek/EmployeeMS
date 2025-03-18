@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EmployeeMS.Shared.DTOs.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EmployeeMS.Shared.DTOs.LeaveRequest
 {
-    public class UpdateLeaveRequestDto : ILeaveRequestDto
+    public class UpdateLeaveRequestDto :BaseDTO, ILeaveRequestDto
     {
         public int EmployeeId { get; set; }
         public DateTime StartDate { get; set; }
