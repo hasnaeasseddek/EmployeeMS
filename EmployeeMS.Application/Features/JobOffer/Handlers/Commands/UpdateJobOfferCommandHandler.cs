@@ -31,7 +31,7 @@ namespace EmployeeMS.Application.Features.JobOffer.Handlers.Commands
             if (validationResult.IsValid == false)
             {
                 response.Success = false;
-                response.Message = "Creation Failed";
+                response.Message = "Update Failed";
                 response.Errors = validationResult.Errors.Select(q => q.ErrorMessage).ToList();
             }
             else
@@ -41,7 +41,7 @@ namespace EmployeeMS.Application.Features.JobOffer.Handlers.Commands
                 await _jobOfferRepository.UpdateAsync(Joboffer);
                 response.Id = Joboffer.Id;
                 response.Success = true;
-                response.Message = "Creation Successful";
+                response.Message = "Update Successful";
             }
 
             return response;
