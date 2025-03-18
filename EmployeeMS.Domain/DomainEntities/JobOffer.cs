@@ -13,7 +13,7 @@ namespace EmployeeMS.Domain.DomainEntities
         public string Location { get; set; }
         public string EmploymentType { get; set; } // CDI, CDD...
         public DateTime? ExpirationDate { get; set; }
-        public string Status { get; set; } 
-        public string RecruitmentFileUrl { get; set; } 
+        public string? Status { get; set; } 
+        public string? RecruitmentFileUrl { get; set; } 
     }
 }

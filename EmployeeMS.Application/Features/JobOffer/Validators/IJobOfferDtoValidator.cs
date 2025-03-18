@@ -30,15 +30,15 @@ namespace EmployeeMS.Application.Features.JobOffer.Validators
                 .NotNull().WithMessage("La date d'expiration est obligatoire.")
                 .GreaterThan(DateTime.UtcNow).WithMessage("La date d'expiration doit être dans le futur.");
 
-            RuleFor(x => x.RecruitmentFileUrl)
-                .NotEmpty().WithMessage("L'URL du fichier de recrutement est obligatoire.")
-                .Must(BeAValidUrl).WithMessage("L'URL du fichier de recrutement n'est pas valide.");
+            //RuleFor(x => x.RecruitmentFileUrl)
+            //    .NotEmpty().WithMessage("L'URL du fichier de recrutement est obligatoire.")
+            //    .Must(BeAValidUrl).WithMessage("L'URL du fichier de recrutement n'est pas valide.");
         }
 
-        private bool BeAValidUrl(string url)
-        {
-            return Uri.TryCreate(url, UriKind.Absolute, out _);
-        }
+        //private bool BeAValidUrl(string url)
+        //{
+        //    return Uri.TryCreate(url, UriKind.Absolute, out _);
+        //}
     }
 
 }

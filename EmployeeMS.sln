@@ -13,21 +13,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{B89D8C27-1A2
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{26DF1F13-BC04-4DE7-B506-0E5994CEB2A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeMS.MVC", "EmployeeMS.MVC\EmployeeMS.MVC.csproj", "{D610CA79-6061-4EC7-8D4A-9F8849D9980A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmployeeMS.MVC", "EmployeeMS.MVC\EmployeeMS.MVC.csproj", "{D610CA79-6061-4EC7-8D4A-9F8849D9980A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeMS.API", "EmployeeMS.API\EmployeeMS.API.csproj", "{EED3493D-7B4D-4D1B-A6BA-DF5B1F48822E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmployeeMS.API", "EmployeeMS.API\EmployeeMS.API.csproj", "{EED3493D-7B4D-4D1B-A6BA-DF5B1F48822E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeMS.Shared", "EmployeeMS.Shared\EmployeeMS.Shared.csproj", "{37B39D81-BD8C-41A6-8600-E916E1CEA45B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmployeeMS.Shared", "EmployeeMS.Shared\EmployeeMS.Shared.csproj", "{37B39D81-BD8C-41A6-8600-E916E1CEA45B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeMS.Domain", "EmployeeMS.Domain\EmployeeMS.Domain.csproj", "{D5744651-DE32-4B79-BB39-B7C088CEA126}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmployeeMS.Domain", "EmployeeMS.Domain\EmployeeMS.Domain.csproj", "{D5744651-DE32-4B79-BB39-B7C088CEA126}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeMS.Application", "EmployeeMS.Application\EmployeeMS.Application.csproj", "{1B705ED2-572C-4698-A11A-FAB42FA24AFF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmployeeMS.Application", "EmployeeMS.Application\EmployeeMS.Application.csproj", "{1B705ED2-572C-4698-A11A-FAB42FA24AFF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrateKeycloak.API", "IntegrateKeycloak.API\IntegrateKeycloak.API.csproj", "{3C1F0018-2315-4EC4-96F8-825AE5A05186}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrateKeycloak.API", "IntegrateKeycloak.API\IntegrateKeycloak.API.csproj", "{3C1F0018-2315-4EC4-96F8-825AE5A05186}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrateKeycloak.MVC", "IntegrateKeycloak.MVC\IntegrateKeycloak.MVC.csproj", "{9EDD6DEF-B3A4-47D2-A81A-7DAA4DEFE17F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrateKeycloak.MVC", "IntegrateKeycloak.MVC\IntegrateKeycloak.MVC.csproj", "{9EDD6DEF-B3A4-47D2-A81A-7DAA4DEFE17F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{18880D1D-5E7E-40E8-9889-3F275A9F7512}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeMS.Infrastructure", "EmployeeMS.Infrastructure\EmployeeMS.Infrastructure.csproj", "{71D10180-A677-451A-857A-D61A0C593AE2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{9EDD6DEF-B3A4-47D2-A81A-7DAA4DEFE17F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9EDD6DEF-B3A4-47D2-A81A-7DAA4DEFE17F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9EDD6DEF-B3A4-47D2-A81A-7DAA4DEFE17F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71D10180-A677-451A-857A-D61A0C593AE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71D10180-A677-451A-857A-D61A0C593AE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71D10180-A677-451A-857A-D61A0C593AE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71D10180-A677-451A-857A-D61A0C593AE2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -80,5 +86,9 @@ Global
 		{3C1F0018-2315-4EC4-96F8-825AE5A05186} = {B89D8C27-1A26-4D2B-92BC-57507452022C}
 		{9EDD6DEF-B3A4-47D2-A81A-7DAA4DEFE17F} = {BFF2A669-78B1-4542-9607-0ABF9038B521}
 		{18880D1D-5E7E-40E8-9889-3F275A9F7512} = {2E675353-71F7-4056-96DB-283DCEA482F3}
+		{71D10180-A677-451A-857A-D61A0C593AE2} = {18880D1D-5E7E-40E8-9889-3F275A9F7512}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CA7F5B1E-2E8F-473F-BC91-74AC029B2233}
 	EndGlobalSection
 EndGlobal
