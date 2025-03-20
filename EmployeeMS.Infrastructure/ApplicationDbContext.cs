@@ -13,6 +13,14 @@ namespace EmployeeMS.Infrastructure
     public class ApplicationDbContext : DbContext
     {
         public DbSet<JobOffer> jobOffers { get; set; }
+        public DbSet<Employee> employees { get; set; }
+        public DbSet<Department> department { get; set; }
+        public DbSet<Position> positions { get; set; }
+        public DbSet<Contract> contracts { get; set; }
+        public DbSet<Attendance> attendances { get; set; }
+        public DbSet<LeaveRequest> leaveRequests { get; set; }
+        public DbSet<Training> trainings { get; set; }
+        public DbSet<EmployeeTraining> employeeTrainings { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
             
