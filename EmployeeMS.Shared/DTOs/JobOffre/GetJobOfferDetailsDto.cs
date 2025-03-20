@@ -1,4 +1,5 @@
 ﻿using EmployeeMS.Shared.DTOs.Common;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace EmployeeMS.Shared.DTOs.JobOffre
         public DateTime DateCreated { get; set; }
         public DateTime? ExpirationDate { get; set; }
         public string Status { get; set; }
-        public string RecruitmentFileUrl { get; set; }
+        public IFormFile? AnnouncementFile { get; set; }
     }
 
 }

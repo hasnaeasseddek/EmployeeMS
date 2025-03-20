@@ -16,6 +16,7 @@ namespace EmployeeMS.Infrastructure
         public static IServiceCollection ConfigurenInfrastructureServices(this IServiceCollection services, IConfiguration configuration) {
             services.AddDbContext<ApplicationDbContext>(op => op.UseSqlServer(configuration.GetConnectionString("Connection")));
             services.AddScoped<IJobOfferRepository, JobOfferRepository>();
+            services.AddScoped<IInternshipApplicationRepository, InternshipApplicationRepository>();
             return services;
         }
     }
