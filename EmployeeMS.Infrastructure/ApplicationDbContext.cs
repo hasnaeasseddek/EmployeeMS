@@ -13,6 +13,8 @@ namespace EmployeeMS.Infrastructure
     public class ApplicationDbContext : DbContext
     {
         public DbSet<JobOffer> jobOffers { get; set; }
+        public DbSet<InternshipApplication> InternshipApplications { get; set; }
+        public DbSet<JobApplication> JobApplications { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
             

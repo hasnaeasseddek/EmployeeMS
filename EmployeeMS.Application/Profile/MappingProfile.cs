@@ -4,6 +4,9 @@ using EmployeeMS.Shared.DTOs.Contract;
 using EmployeeMS.Shared.DTOs.Department;
 using EmployeeMS.Shared.DTOs.Employee;
 using EmployeeMS.Shared.DTOs.EmployeeTraining;
+using EmployeeMS.Shared.DTOs.InternshipApplications;
+using EmployeeMS.Shared.DTOs.JobApplication;
+using EmployeeMS.Shared.DTOs.JobApplications;
 using EmployeeMS.Shared.DTOs.JobOffre;
 using EmployeeMS.Shared.DTOs.LeaveRequest;
 using EmployeeMS.Shared.DTOs.Position;
@@ -125,9 +128,44 @@ namespace EmployeeMS.Application.Profile
                 .ForMember(dest => dest.TrainingTitle, opt => opt.MapFrom(src => src.Training.Title))
                 .ReverseMap();
 
-            CreateMap<EmployeeTraining, CreateEmployeeTrainingDto>().ReverseMap();
-            CreateMap<EmployeeTraining, UpdateEmployeeTrainingDto>().ReverseMap();
-            
+            // Mapping de CreateInternshipApplicationDto vers InternshipApplication
+            CreateMap<CreateInternshipApplicationDto, InternshipApplication>()
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => "En attente"))
+                .ForMember(dest => dest.DocumentUrls, opt => opt.Ignore())// Les fichiers ne sont pas mappés directement
+                .ReverseMap();
+
+
+            // Mapping de InternshipApplication vers GetAllInternshipApplicationsDto
+            CreateMap<InternshipApplication, GetAllInternshipApplicationsDto>()
+                .ForMember(dest => dest.ApplicationDate, opt => opt.MapFrom(src => src.DateCreated));
+
+            // Mapping de InternshipApplication vers GetInternshipApplicationDetailsDto
+            CreateMap<InternshipApplication, GetInternshipApplicationDetailsDto>()
+                .ForMember(dest => dest.ApplicationDate, opt => opt.MapFrom(src => src.DateCreated));
+
+            // Mapping de UpdateInternshipApplicationDto vers InternshipApplication
+            CreateMap<UpdateInternshipApplicationDto, InternshipApplication>()
+                .ForMember(dest => dest.DocumentUrls, opt => opt.Ignore()); // On ne met pas à jour directement les fichiers
+
+            //jobapplicationDtos
+
+            // Mapping CreateJobApplicationDto -> JobApplication
+            CreateMap<CreateJobApplicationDto, JobApplication>()
+                .ForMember(dest => dest.DocumentPaths, opt => opt.Ignore());// Géré séparément
+
+            // Mapping UpdateJobApplicationDto -> JobApplication
+            CreateMap<UpdateJobApplicationDto, JobApplication>()
+                .ForMember(dest => dest.DocumentPaths, opt => opt.Ignore());// Géré séparément
+
+            // Mapping JobApplication -> GetJobApplicationDetailsDto
+            CreateMap<JobApplication, GetJobApplicationDetailsDto>()
+                .ForMember(dest => dest.JobOfferDto, opt => opt.MapFrom(src => src.JobOffer))
+                .ForMember(dest => dest.DocumentPaths, opt => opt.MapFrom(src => src.DocumentPaths));
+
+            // Mapping JobApplication -> GetAllJobApplicationsDto
+            CreateMap<JobApplication, GetAllJobApplicationsDto>()
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
+                .ForMember(dest => dest.JobOfferTitle, opt => opt.MapFrom(src => src.JobOffer.Title));
         }
     }
 }
