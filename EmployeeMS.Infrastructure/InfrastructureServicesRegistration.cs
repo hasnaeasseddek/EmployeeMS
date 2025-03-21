@@ -15,8 +15,18 @@ namespace EmployeeMS.Infrastructure
     {
         public static IServiceCollection ConfigurenInfrastructureServices(this IServiceCollection services, IConfiguration configuration) {
             services.AddDbContext<ApplicationDbContext>(op => op.UseSqlServer(configuration.GetConnectionString("Connection")));
-            services.AddScoped<IJobOfferRepository, JobOfferRepository>();
+            services.AddScoped<IAttendanceRepository, AttendanceRepository>();
+            services.AddScoped<IContractRepository, ContractRepository>();
+            services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            services.AddScoped<IEmployeeTrainingRepository, EmployeeTrainingRepository>();
             services.AddScoped<IInternshipApplicationRepository, InternshipApplicationRepository>();
+            services.AddScoped<IJobApplicationRepository, JobApplicationRepository>();
+            services.AddScoped<IJobOfferRepository, JobOfferRepository>();
+            services.AddScoped<ILeaveRequestRepository, LeaveRequestRepository>();
+            services.AddScoped<IPositionRepository, PositionRepository>();
+            services.AddScoped<ITrainingRepository, TrainingRepository>();
+            
             return services;
         }
     }
