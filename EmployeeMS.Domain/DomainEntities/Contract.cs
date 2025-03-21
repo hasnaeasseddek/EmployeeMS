@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EmployeeMS.Shared.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,6 @@ namespace EmployeeMS.Domain.DomainEntities
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public decimal Salary { get; set; }
-        public string ContractType { get; set; } // Example: CDI, CDD, Internship
+        public ContractType ContractType { get; set; } = ContractType.CDI;// Example: CDI, CDD, Internship
     }
 }

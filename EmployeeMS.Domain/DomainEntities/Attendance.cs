@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EmployeeMS.Shared.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,5 +14,6 @@ namespace EmployeeMS.Domain.DomainEntities
         public DateTime CheckInTime { get; set; }
         public DateTime? CheckOutTime { get; set; }
         public double HoursWorked { get; set; }
+        public AttendanceStatus AttendanceStatus { get; set; } = AttendanceStatus.Present;
     }
 }
