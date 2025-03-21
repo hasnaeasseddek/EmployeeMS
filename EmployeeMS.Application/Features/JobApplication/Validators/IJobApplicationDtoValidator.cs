@@ -69,5 +69,5 @@ namespace EmployeeMS.Application.Features.JobApplication.Validators
             return allowedExtensions.Contains(fileExtension);
         }
     }
-    }
 }
+

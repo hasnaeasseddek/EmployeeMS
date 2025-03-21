@@ -34,7 +34,7 @@ namespace EmployeeMS.API.Controllers
         [HttpPost]
         public async Task<ActionResult<BaseCommandResponse>> AddLeaveType(CreateJobOfferDto createJobOfferDto)
         {
-            var response = await _mediator.Send(new CreateJobOfferCommand { createJobOfferDto  = createJobOfferDto });
+            var response = await _mediator.Send(new CreateJobOfferCommand { createJobOfferDto = createJobOfferDto });
             return Ok(response);
         }
 
