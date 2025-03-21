@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EmployeeMS.Shared.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,8 +13,8 @@ namespace EmployeeMS.Domain.DomainEntities
         public Employee Employee { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public string LeaveType { get; set; } // Example: Paid, Sick, etc.
-        public string Status { get; set; } // Pending, Approved, Rejected
+        public LeaveType LeaveType { get; set; } = LeaveType.PaidLeave; // Example: Paid, Sick, etc.
+        public LeaveStatus Status { get; set; } = LeaveStatus.Pending; // Pending, Approved, Rejected
         public string Reason { get; set; }
     }
 }
