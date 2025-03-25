@@ -20,7 +20,7 @@ namespace EmployeeMS.API.Controllers
         }
 
         [HttpGet]
-        public async Task<List<GetListAllJobOfferDto>> GetAllLeaveTypes()
+        public async Task<List<GetListAllJobOfferDto>> GetAll()
         {
             return await _mediator.Send(new GetJobOfferListRequest());
         }
@@ -32,21 +32,21 @@ namespace EmployeeMS.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<BaseCommandResponse>> AddLeaveType(CreateJobOfferDto createJobOfferDto)
+        public async Task<ActionResult<BaseCommandResponse>> Add(CreateJobOfferDto createJobOfferDto)
         {
-            var response = await _mediator.Send(new CreateJobOfferCommand { CreateJobOfferDto  = createJobOfferDto });
+            var response = await _mediator.Send(new CreateJobOfferCommand { createJobOfferDto  = createJobOfferDto });
             return Ok(response);
         }
 
         [HttpPut]
-        public async Task<ActionResult<BaseCommandResponse>> UpdateLeaveType(UpdateJobOfferDto updateJobOfferDto)
+        public async Task<ActionResult<BaseCommandResponse>> Update(UpdateJobOfferDto updateJobOfferDto)
         {
-            var response = await _mediator.Send(new UpdateJobOfferCommand { UpdateJobOfferDto = updateJobOfferDto });
+            var response = await _mediator.Send(new UpdateJobOfferCommand { updateJobOfferDto = updateJobOfferDto });
             return Ok(response);
         }
 
         [HttpDelete]
-        public async Task<ActionResult> DeleteLeaveType(int id)
+        public async Task<ActionResult> Delete(int id)
         {
             var response = await _mediator.Send(new DeleteJobOfferCommand { Id = id });
             return Ok(response);

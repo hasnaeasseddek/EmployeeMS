@@ -45,5 +45,13 @@ namespace IntegrateKeycloak.API.Controllers
             if (!success) return BadRequest("Échec de la suppression de l'utilisateur.");
             return Ok("Utilisateur supprimé.");
         }
+        [HttpPost("{userId}/assign-role")]
+        public async Task<IActionResult> AssignRoleToUser(string userId, [FromQuery] string role)
+        {
+            var success = await _keycloakUserService.AssignRoleToUser(userId, role);
+            if (!success) return BadRequest("Échec de l'assignation du rôle.");
+            return Ok("Rôle assigné avec succès.");
+        }
+
     }
 }

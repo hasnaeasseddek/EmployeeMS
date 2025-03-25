@@ -27,7 +27,7 @@ namespace EmployeeMS.Application.Features.JobApplication.Handlers.Commands
         {
             var response = new BaseCommandResponse();
             var validator = new CreateJobApplicationDtoValidator();
-            var validationResult = await validator.ValidateAsync(request.createJobApplicationDto);
+            var validationResult = await validator.ValidateAsync(request.CreateJobApplicationDto);
 
             if (validationResult.IsValid == false)
             {
@@ -37,7 +37,7 @@ namespace EmployeeMS.Application.Features.JobApplication.Handlers.Commands
             }
             else
             {
-                var jobapplication = _mapper.Map<Domain.DomainEntities.JobApplication>(request.createJobApplicationDto);
+                var jobapplication = _mapper.Map<Domain.DomainEntities.JobApplication>(request.CreateJobApplicationDto);
 
                 await _jobApplicationRepository.AddAsync(jobapplication);
                 response.Id = jobapplication.Id;

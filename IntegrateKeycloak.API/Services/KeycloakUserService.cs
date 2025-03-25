@@ -157,5 +157,28 @@ namespace IntegrateKeycloak.API.Services
             var response = await _httpClient.DeleteAsync($"{_baseUrl}/{userId}");
             return response.IsSuccessStatusCode;
         }
+        public async Task<bool> AssignRoleToUser(string userId, string roleName)
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _adminToken);
+
+            // Vérifier si le rôle existe
+            var getRoleResponse = await _httpClient.GetAsync($"http://localhost:8080/admin/realms/Poject_test/roles/{roleName}");
+            if (!getRoleResponse.IsSuccessStatusCode)
+                return false;
+
+            var roleContent = await getRoleResponse.Content.ReadAsStringAsync();
+            var role = JsonSerializer.Deserialize<RoleDto>(roleContent);
+            if (role == null)
+                return false;
+
+            // Assigner le rôle à l'utilisateur
+            var jsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+            var assignRoleJson = new StringContent(JsonSerializer.Serialize(new[] { role }, jsonOptions), Encoding.UTF8, "application/json");
+
+            var assignRoleResponse = await _httpClient.PostAsync($"{_baseUrl}/{userId}/role-mappings/realm", assignRoleJson);
+
+            return assignRoleResponse.IsSuccessStatusCode;
+        }
+
     }
 }

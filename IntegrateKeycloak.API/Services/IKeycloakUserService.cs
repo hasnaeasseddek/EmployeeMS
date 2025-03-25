@@ -6,5 +6,7 @@
         Task<bool> CreateUserWithRole(UserCreationDto newUser, string roleName);
         Task<bool> UpdateUser(string userId, KeycloakUser user);
         Task<bool> DeleteUser(string userId);
+        Task<bool> AssignRoleToUser(string userId, string roleName);
+
     }
 }
