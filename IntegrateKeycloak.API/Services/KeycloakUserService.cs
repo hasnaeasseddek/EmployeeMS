@@ -43,7 +43,6 @@ namespace IntegrateKeycloak.API.Services
             return tokenResponse.AccessToken;
         }
 
-
         public async Task<List<KeycloakUser>> GetUsers()
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _adminToken);
@@ -141,8 +140,6 @@ namespace IntegrateKeycloak.API.Services
             return assignRoleResponse.IsSuccessStatusCode;
         }
 
-
-
         public async Task<bool> UpdateUser(string userId, KeycloakUser user)
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _adminToken);
@@ -157,28 +154,73 @@ namespace IntegrateKeycloak.API.Services
             var response = await _httpClient.DeleteAsync($"{_baseUrl}/{userId}");
             return response.IsSuccessStatusCode;
         }
+
         public async Task<bool> AssignRoleToUser(string userId, string roleName)
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _adminToken);
 
-            // Vérifier si le rôle existe
-            var getRoleResponse = await _httpClient.GetAsync($"http://localhost:8080/admin/realms/Poject_test/roles/{roleName}");
-            if (!getRoleResponse.IsSuccessStatusCode)
+            try
+            {
+                string clientUUID = await GetClientUUID("mvc-client"); // Remplace "mvc-client" par ton client_id
+
+                //  Récupérer le rôle du client
+                var getRoleResponse = await _httpClient.GetAsync($"http://localhost:8080/admin/realms/Poject_test/clients/{clientUUID}/roles/{roleName}");
+                if (!getRoleResponse.IsSuccessStatusCode)
+                {
+                    //Console.WriteLine($"Rôle '{roleName}' non trouvé pour le client '{clientId}'.");
+                    return false;
+                }
+
+                var roleContent = await getRoleResponse.Content.ReadAsStringAsync();
+                var role = JsonSerializer.Deserialize<RoleDto>(roleContent);
+                if (role == null)
+                {
+                    Console.WriteLine("Impossible de désérialiser le rôle.");
+                    return false;
+                }
+
+                // 3️ Assigner le rôle à l'utilisateur
+                var jsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+                var assignRoleJson = new StringContent(JsonSerializer.Serialize(new[] { role }, jsonOptions), Encoding.UTF8, "application/json");
+
+                var assignRoleResponse = await _httpClient.PostAsync(
+                    $"http://localhost:8080/admin/realms/Poject_test/users/{userId}/role-mappings/clients/{clientUUID}",
+                    assignRoleJson
+                );
+
+                if (!assignRoleResponse.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"Erreur lors de l'assignation du rôle : {assignRoleResponse.ReasonPhrase}");
+                }
+
+                return assignRoleResponse.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception : {ex.Message}");
                 return false;
-
-            var roleContent = await getRoleResponse.Content.ReadAsStringAsync();
-            var role = JsonSerializer.Deserialize<RoleDto>(roleContent);
-            if (role == null)
-                return false;
-
-            // Assigner le rôle à l'utilisateur
-            var jsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
-            var assignRoleJson = new StringContent(JsonSerializer.Serialize(new[] { role }, jsonOptions), Encoding.UTF8, "application/json");
-
-            var assignRoleResponse = await _httpClient.PostAsync($"{_baseUrl}/{userId}/role-mappings/realm", assignRoleJson);
-
-            return assignRoleResponse.IsSuccessStatusCode;
+            }
         }
 
+        private async Task<string> GetClientUUID(string clientId)
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _adminToken);
+
+            var response = await _httpClient.GetAsync("http://localhost:8080/admin/realms/Poject_test/clients");
+            if (!response.IsSuccessStatusCode)
+                throw new Exception("Erreur lors de la récupération des clients Keycloak");
+
+            var content = await response.Content.ReadAsStringAsync();
+            var clients = JsonSerializer.Deserialize<List<ClientDto>>(content, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+
+            var client = clients?.FirstOrDefault(c => c.ClientId == clientId);
+            return client?.Id ?? throw new Exception($"Client '{clientId}' non trouvé");
+        }
+
+        public class ClientDto
+        {
+            public string Id { get; set; } // L'UUID du client
+            public string ClientId { get; set; } // Le nom unique du client
+        }
     }
 }
