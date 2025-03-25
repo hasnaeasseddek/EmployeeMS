@@ -11,6 +11,6 @@ namespace EmployeeMS.Application.Features.JobApplication.Requests.Commands
 {
     public class CreateJobApplicationCommand :IRequest<BaseCommandResponse>
     {
-        public CreateJobApplicationDto createJobApplicationDto { get; set; }
+        public CreateJobApplicationDto CreateJobApplicationDto { get; set; }
     }
 }

@@ -11,6 +11,6 @@ namespace EmployeeMS.Application.Features.JobOffer.Requests.Commands
 {
     public class UpdateJobOfferCommand :IRequest<BaseCommandResponse>
     {
-        public UpdateJobOfferDto updateJobOfferDto {  get; set; }
+        public UpdateJobOfferDto UpdateJobOfferDto {  get; set; }
     }
 }

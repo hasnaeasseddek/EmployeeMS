@@ -1,3 +1,4 @@
+using IntegrateKeycloak.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -9,7 +10,7 @@ builder.Services.AddAuthentication(options =>
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer("SI_Mobile", options =>
 {
-    options.MetadataAddress = "http://localhost:8080/realms/Poject_test";
+    options.MetadataAddress = "http://localhost:8080/realms/Poject_test/.well-known/openid-configuration";
     options.SaveToken = true;
     options.Audience = "mvc-client";
     options.RequireHttpsMetadata = false;
@@ -23,6 +24,7 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
     };
 });
+builder.Services.AddHttpClient<IKeycloakUserService, KeycloakUserService>();
 
 builder.Services.AddAuthorization();
 

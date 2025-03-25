@@ -26,7 +26,7 @@ namespace EmployeeMS.Application.Features.JobOffer.Handlers.Commands
         {
             var response = new BaseCommandResponse();
             var validator = new UpdateJobOfferDtoValidator();
-            var validationResult = await validator.ValidateAsync(request.updateJobOfferDto);
+            var validationResult = await validator.ValidateAsync(request.UpdateJobOfferDto);
 
             if (validationResult.IsValid == false)
             {
@@ -36,8 +36,8 @@ namespace EmployeeMS.Application.Features.JobOffer.Handlers.Commands
             }
             else
             {
-                var Joboffer = await _jobOfferRepository.GetByIdAsync(request.updateJobOfferDto.Id);
-                _mapper.Map(request.updateJobOfferDto, Joboffer);
+                var Joboffer = await _jobOfferRepository.GetByIdAsync(request.UpdateJobOfferDto.Id);
+                _mapper.Map(request.UpdateJobOfferDto, Joboffer);
                 await _jobOfferRepository.UpdateAsync(Joboffer);
                 response.Id = Joboffer.Id;
                 response.Success = true;

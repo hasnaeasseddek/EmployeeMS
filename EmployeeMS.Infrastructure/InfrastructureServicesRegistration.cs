@@ -15,19 +15,19 @@ namespace EmployeeMS.Infrastructure
     {
         public static IServiceCollection ConfigurenInfrastructureServices(this IServiceCollection services, IConfiguration configuration) {
             services.AddDbContext<ApplicationDbContext>(op => op.UseSqlServer(configuration.GetConnectionString("Connection")));
+            services.AddScoped<IAttendanceRepository, AttendanceRepository>();
+            services.AddScoped<IContractRepository, ContractRepository>();
+            services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            services.AddScoped<IEmployeeTrainingRepository, EmployeeTrainingRepository>();
+            services.AddScoped<IInternshipApplicationRepository, InternshipApplicationRepository>();
+            services.AddScoped<IJobApplicationRepository, JobApplicationRepository>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IJobOfferRepository, JobOfferRepository>();
-            services.AddScoped<IInternshipApplicationRepository, InternshipApplicationRepository>();
-            services.AddScoped<ITrainingRepository, TrainingRepository>();
-            services.AddScoped<IJobApplicationRepository, JobApplicationRepository>();
-            services.AddScoped<ITrainingRepository, TrainingRepository>();
             services.AddScoped<ILeaveRequestRepository, LeaveRequestRepository>();
-            services.AddScoped<IEmployeeTrainingRepository, EmployeeTrainingRepository>();
-            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-            services.AddScoped<IDepartmentRepository, DepartmentRepository>();
-            services.AddScoped<IContractRepository, ContractRepository>();
-            services.AddScoped<IAttendanceRepository, AttendanceRepository>();
             services.AddScoped<IPositionRepository, PositionRepository>();
+            services.AddScoped<ITrainingRepository, TrainingRepository>();
+            
             return services;
         }
     }
