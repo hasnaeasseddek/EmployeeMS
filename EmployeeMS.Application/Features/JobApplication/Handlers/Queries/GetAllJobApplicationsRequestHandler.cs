@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace EmployeeMS.Application.Features.JobApplication.Handlers.Queries
 {
-    public class GetAllJobApplicationsRequestHandler : IRequestHandler<GetAllJobApplicationsRequest, List<GetAllJobApplicationsDto>
+    public class GetAllJobApplicationsRequestHandler : IRequestHandler<GetAllJobApplicationsRequest, List<GetAllJobApplicationsDto>>
     {
         private readonly IJobApplicationRepository _jobApplicationRepository;
         private readonly IMapper _mapper;

@@ -20,8 +20,8 @@ namespace EmployeeMS.Infrastructure.Repositories
 
         public async Task UpdateStatus(string status, InternshipApplication internship)
         {
-            internship.Status = status;
-            _dbContext.Entry(internship).State = EntityState.Modified;
+            //internship.Status = status;
+            //_dbContext.Entry(internship).State = EntityState.Modified;
         }
     }
 }

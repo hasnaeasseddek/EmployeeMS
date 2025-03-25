@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using EmployeeMS.Application.Contracts.Persistence;
+using EmployeeMS.Application.Features.InternshipApplication.Validators;
 using EmployeeMS.Application.Features.JobApplication.Requests.Commands;
+using EmployeeMS.Application.Features.JobApplication.Validators;
 using EmployeeMS.Application.Responses;
 using MediatR;
 using System;
@@ -21,9 +23,29 @@ namespace EmployeeMS.Application.Features.JobApplication.Handlers.Commands
             _jobApplicationRepository = jobApplicationRepository;
             _mapper = mapper;
         }
-        public Task<BaseCommandResponse> Handle(CreateJobApplicationCommand request, CancellationToken cancellationToken)
+        public async Task<BaseCommandResponse> Handle(CreateJobApplicationCommand request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var response = new BaseCommandResponse();
+            var validator = new CreateJobApplicationDtoValidator();
+            var validationResult = await validator.ValidateAsync(request.createJobApplicationDto);
+
+            if (validationResult.IsValid == false)
+            {
+                response.Success = false;
+                response.Message = "Creation Failed";
+                response.Errors = validationResult.Errors.Select(q => q.ErrorMessage).ToList();
+            }
+            else
+            {
+                var jobapplication = _mapper.Map<Domain.DomainEntities.JobApplication>(request.createJobApplicationDto);
+
+                await _jobApplicationRepository.AddAsync(jobapplication);
+                response.Id = jobapplication.Id;
+                response.Success = true;
+                response.Message = "Creation Successful";
+            }
+
+            return response;
         }
     }
 }
