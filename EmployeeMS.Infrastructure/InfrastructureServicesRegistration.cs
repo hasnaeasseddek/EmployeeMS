@@ -10,7 +10,7 @@ namespace EmployeeMS.Infrastructure
     {
         public static IServiceCollection ConfigurenInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<ApplicationDbContext>(op => op.UseSqlServer(configuration.GetConnectionString("Connection")));
+            services.AddDbContext<ApplicationDbContext>(op => op.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<IAttendanceRepository, AttendanceRepository>();
             services.AddScoped<IContractRepository, ContractRepository>();
             services.AddScoped<IDepartmentRepository, DepartmentRepository>();

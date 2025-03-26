@@ -1,7 +1,9 @@
-using EmployeeMS.Application;
+﻿using EmployeeMS.Application;
 using EmployeeMS.Infrastructure;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
-AppDomain.CurrentDomain.SetData("DataDirectory", Path.Combine(AppContext.BaseDirectory));
+
 // Add services to the container.
 builder.Services.ConfigureApplicationServices();
 builder.Services.ConfigurenInfrastructureServices(builder.Configuration);
@@ -11,6 +13,19 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+// Vérifie que la connexion existe bien
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    throw new InvalidOperationException("Connection string 'DefaultConnection' is missing! Please check appsettings.json.");
+}
+else
+{
+    Console.WriteLine($"✅ Using Connection String: {connectionString}");
+}
+
+
 
 //using (var serviceScope = app.Services.CreateScope())
 //{
