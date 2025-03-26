@@ -11,11 +11,6 @@ using EmployeeMS.Shared.DTOs.JobOffre;
 using EmployeeMS.Shared.DTOs.LeaveRequest;
 using EmployeeMS.Shared.DTOs.Position;
 using EmployeeMS.Shared.DTOs.Training;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmployeeMS.Application.Profile
 {

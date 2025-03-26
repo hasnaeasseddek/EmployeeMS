@@ -1,15 +1,10 @@
 ﻿using EmployeeMS.Application.Contracts.Persistence;
 using EmployeeMS.Domain.DomainEntities;
 using EmployeeMS.Shared.DTOs.JobApplications;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmployeeMS.Infrastructure.Repositories
 {
-    public class JobApplicationRepository : GenericRepository<JobApplication> , IJobApplicationRepository
+    public class JobApplicationRepository : GenericRepository<JobApplication>, IJobApplicationRepository
     {
         private readonly ApplicationDbContext _dbContext;
 

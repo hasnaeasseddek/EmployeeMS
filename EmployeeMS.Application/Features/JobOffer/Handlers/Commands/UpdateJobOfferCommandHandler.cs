@@ -4,11 +4,6 @@ using EmployeeMS.Application.Features.JobOffer.Requests.Commands;
 using EmployeeMS.Application.Features.JobOffer.Validators;
 using EmployeeMS.Application.Responses;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmployeeMS.Application.Features.JobOffer.Handlers.Commands
 {
@@ -45,7 +40,7 @@ namespace EmployeeMS.Application.Features.JobOffer.Handlers.Commands
             }
 
             return response;
-            
+
         }
     }
 }

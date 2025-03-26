@@ -1,12 +1,6 @@
 ﻿using EmployeeMS.Domain.DomainEntities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmployeeMS.Infrastructure
 {
@@ -25,7 +19,7 @@ namespace EmployeeMS.Infrastructure
         public DbSet<EmployeeTraining> employeeTrainings { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
-            
+
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -33,9 +27,9 @@ namespace EmployeeMS.Infrastructure
         }
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            foreach(var entry in ChangeTracker.Entries<BaseDomainEntity>())
+            foreach (var entry in ChangeTracker.Entries<BaseDomainEntity>())
             {
-                if(entry.State == EntityState.Added)
+                if (entry.State == EntityState.Added)
                     entry.Entity.DateCreated = DateTime.Now;
                 entry.Entity.LastModifiedDate = DateTime.Now;
             }

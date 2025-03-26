@@ -1,5 +1,4 @@
 ﻿using EmployeeMS.Shared.Enums;
-using Microsoft.AspNetCore.Http;
 
 namespace EmployeeMS.Domain.DomainEntities
 {

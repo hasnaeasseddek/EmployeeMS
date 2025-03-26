@@ -1,12 +1,8 @@
 ﻿using EmployeeMS.Application.Features.InternshipApplication.Requests.Commands;
 using EmployeeMS.Application.Features.InternshipApplication.Requests.Queries;
-using EmployeeMS.Application.Features.JobOffer.Requests.Commands;
-using EmployeeMS.Application.Features.JobOffer.Requests.Queries;
 using EmployeeMS.Application.Responses;
 using EmployeeMS.Shared.DTOs.InternshipApplications;
-using EmployeeMS.Shared.DTOs.JobOffre;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeMS.API.Controllers
@@ -35,7 +31,7 @@ namespace EmployeeMS.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<BaseCommandResponse>> AddLeaveType([FromForm]CreateInternshipApplicationDto createInternshipApplication)
+        public async Task<ActionResult<BaseCommandResponse>> AddLeaveType([FromForm] CreateInternshipApplicationDto createInternshipApplication)
         {
             var response = await _mediator.Send(new CreateInternshipApplicationCommand { createInternshipApplication = createInternshipApplication });
             return Ok(response);

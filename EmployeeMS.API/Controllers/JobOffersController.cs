@@ -3,7 +3,6 @@ using EmployeeMS.Application.Features.JobOffer.Requests.Queries;
 using EmployeeMS.Application.Responses;
 using EmployeeMS.Shared.DTOs.JobOffre;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeMS.API.Controllers
@@ -34,14 +33,14 @@ namespace EmployeeMS.API.Controllers
         [HttpPost]
         public async Task<ActionResult<BaseCommandResponse>> Add(CreateJobOfferDto createJobOfferDto)
         {
-            var response = await _mediator.Send(new CreateJobOfferCommand { createJobOfferDto  = createJobOfferDto });
+            var response = await _mediator.Send(new CreateJobOfferCommand { CreateJobOfferDto = createJobOfferDto });
             return Ok(response);
         }
 
         [HttpPut]
         public async Task<ActionResult<BaseCommandResponse>> Update(UpdateJobOfferDto updateJobOfferDto)
         {
-            var response = await _mediator.Send(new UpdateJobOfferCommand { updateJobOfferDto = updateJobOfferDto });
+            var response = await _mediator.Send(new UpdateJobOfferCommand { UpdateJobOfferDto = updateJobOfferDto });
             return Ok(response);
         }
 

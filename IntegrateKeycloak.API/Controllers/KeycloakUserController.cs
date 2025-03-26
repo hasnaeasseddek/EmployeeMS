@@ -1,5 +1,4 @@
 ﻿using IntegrateKeycloak.API.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IntegrateKeycloak.API.Controllers

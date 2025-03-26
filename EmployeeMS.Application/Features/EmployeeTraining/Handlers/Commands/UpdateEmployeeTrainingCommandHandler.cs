@@ -4,11 +4,6 @@ using EmployeeMS.Application.Features.EmployeeTraining.Requests.Commands;
 using EmployeeMS.Application.Features.EmployeeTraining.Validators;
 using EmployeeMS.Application.Responses;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmployeeMS.Application.Features.EmployeeTraining.Handlers.Commands
 {

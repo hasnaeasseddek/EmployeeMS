@@ -362,14 +362,10 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-# add by issam
-# Ignore Entity Framework Core migrations
-**/Migrations/
 
 # Ignore database files (if using SQLite for local dev)
 *.db
 *.sqlite
-**/EmployeeMS.mdf
-**/EmployeeMS_log.ldf
+
 # Ignore string cnx
 /EmployeeMS.API/appsettings.json
