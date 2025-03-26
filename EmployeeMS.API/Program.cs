@@ -1,8 +1,7 @@
 using EmployeeMS.Application;
 using EmployeeMS.Infrastructure;
-using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
-
+AppDomain.CurrentDomain.SetData("DataDirectory", Path.Combine(AppContext.BaseDirectory));
 // Add services to the container.
 builder.Services.ConfigureApplicationServices();
 builder.Services.ConfigurenInfrastructureServices(builder.Configuration);

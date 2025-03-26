@@ -3,17 +3,13 @@ using EmployeeMS.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmployeeMS.Infrastructure
 {
     public static class InfrastructureServicesRegistration
     {
-        public static IServiceCollection ConfigurenInfrastructureServices(this IServiceCollection services, IConfiguration configuration) {
+        public static IServiceCollection ConfigurenInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
+        {
             services.AddDbContext<ApplicationDbContext>(op => op.UseSqlServer(configuration.GetConnectionString("Connection")));
             services.AddScoped<IAttendanceRepository, AttendanceRepository>();
             services.AddScoped<IContractRepository, ContractRepository>();
@@ -27,7 +23,7 @@ namespace EmployeeMS.Infrastructure
             services.AddScoped<ILeaveRequestRepository, LeaveRequestRepository>();
             services.AddScoped<IPositionRepository, PositionRepository>();
             services.AddScoped<ITrainingRepository, TrainingRepository>();
-            
+
             return services;
         }
     }
