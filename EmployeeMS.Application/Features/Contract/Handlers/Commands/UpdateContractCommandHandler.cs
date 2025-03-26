@@ -4,11 +4,6 @@ using EmployeeMS.Application.Features.Contract.Requests.Commands;
 using EmployeeMS.Application.Features.Contract.Validators;
 using EmployeeMS.Application.Responses;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmployeeMS.Application.Features.Contract.Handlers.Commands
 {

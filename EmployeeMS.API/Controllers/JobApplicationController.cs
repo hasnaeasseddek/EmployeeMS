@@ -1,13 +1,9 @@
 ﻿using EmployeeMS.Application.Features.JobApplication.Requests.Commands;
 using EmployeeMS.Application.Features.JobApplication.Requests.Queries;
-using EmployeeMS.Application.Features.JobOffer.Requests.Commands;
-using EmployeeMS.Application.Features.JobOffer.Requests.Queries;
 using EmployeeMS.Application.Responses;
 using EmployeeMS.Shared.DTOs.JobApplication;
 using EmployeeMS.Shared.DTOs.JobApplications;
-using EmployeeMS.Shared.DTOs.JobOffre;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeMS.API.Controllers
@@ -45,7 +41,7 @@ namespace EmployeeMS.API.Controllers
         [HttpPut]
         public async Task<ActionResult<BaseCommandResponse>> Update(UpdateJobApplicationDto updateJobApplication)
         {
-            var response = await _mediator.Send(new UpdateJobApplicationCommand { updateJobApplicationDto = updateJobApplication });
+            var response = await _mediator.Send(new UpdateJobApplicationCommand { UpdateJobApplicationDto = updateJobApplication });
             return Ok(response);
         }
 

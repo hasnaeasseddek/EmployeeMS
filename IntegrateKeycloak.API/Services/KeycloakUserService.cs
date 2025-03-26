@@ -1,8 +1,6 @@
 ﻿using System.Net.Http.Headers;
-using System.Text.Json;
 using System.Text;
-using System.Runtime;
-using static System.Net.WebRequestMethods;
+using System.Text.Json;
 
 namespace IntegrateKeycloak.API.Services
 {

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace EmployeeMS.Shared.DTOs.Employee
+﻿namespace EmployeeMS.Shared.DTOs.Employee
 {
     public class CreateEmployeeDto : IEmployeeDto
     {

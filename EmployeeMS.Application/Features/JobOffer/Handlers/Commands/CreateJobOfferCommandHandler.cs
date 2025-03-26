@@ -3,13 +3,7 @@ using EmployeeMS.Application.Contracts.Persistence;
 using EmployeeMS.Application.Features.JobOffer.Requests.Commands;
 using EmployeeMS.Application.Features.JobOffer.Validators;
 using EmployeeMS.Application.Responses;
-using EmployeeMS.Domain.DomainEntities;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmployeeMS.Application.Features.JobOffer.Handlers.Commands
 {
@@ -42,12 +36,12 @@ namespace EmployeeMS.Application.Features.JobOffer.Handlers.Commands
                 await _jobOfferRepository.AddAsync(joboffer);
                 response.Id = joboffer.Id;
                 response.Success = true;
-                response.Message = "Creation Successful";               
+                response.Message = "Creation Successful";
             }
 
             return response;
         }
-       
+
 
     }
 }

@@ -1,11 +1,5 @@
 ﻿using EmployeeMS.Application.Contracts.Persistence;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmployeeMS.Infrastructure.Repositories
 {
@@ -36,7 +30,7 @@ namespace EmployeeMS.Infrastructure.Repositories
 
         public async Task<IReadOnlyList<T>> GetAllAsync()
         {
-            return  _context.Set<T>().ToList();
+            return _context.Set<T>().ToList();
         }
 
         public async Task<T> GetByIdAsync(int id)

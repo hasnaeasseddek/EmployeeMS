@@ -4,7 +4,7 @@ using EmployeeMS.Shared.Enums;
 
 namespace EmployeeMS.Shared.DTOs.JobApplications
 {
-    public class GetJobApplicationDetailsDto :BaseDTO
+    public class GetJobApplicationDetailsDto : BaseDTO
     {
         public string LastName { get; set; } = string.Empty;
         public string FirstName { get; set; } = string.Empty;

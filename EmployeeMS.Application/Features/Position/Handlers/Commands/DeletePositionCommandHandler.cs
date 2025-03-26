@@ -1,11 +1,6 @@
 ﻿using EmployeeMS.Application.Contracts.Persistence;
 using EmployeeMS.Application.Features.Position.Requests.Commands;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmployeeMS.Application.Features.Position.Handlers.Commands
 {

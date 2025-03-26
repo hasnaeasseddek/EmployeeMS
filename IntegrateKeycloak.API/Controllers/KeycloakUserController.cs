@@ -1,5 +1,4 @@
 ﻿using IntegrateKeycloak.API.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IntegrateKeycloak.API.Controllers
@@ -25,7 +24,7 @@ namespace IntegrateKeycloak.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] UserCreationDto user, string role)
         {
-            var success = await _keycloakUserService.CreateUserWithRole(user,role);
+            var success = await _keycloakUserService.CreateUserWithRole(user, role);
             if (!success) return BadRequest("Échec de la création de l'utilisateur.");
             return Ok("Utilisateur créé avec succès.");
         }
