@@ -7,6 +7,7 @@
         public string LastName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public bool Enabled { get; set; } = true;
+        public bool EmailVerified { get; set; } = true;
         public List<CredentialDto>? Credentials { get; set; }
     }
 

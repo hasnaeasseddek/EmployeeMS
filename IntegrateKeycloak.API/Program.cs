@@ -25,6 +25,9 @@ builder.Services.AddAuthentication(options =>
     };
 });
 builder.Services.AddHttpClient<IKeycloakUserService, KeycloakUserService>();
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddTransient<IEmailService, EmailService>();
+builder.Services.Configure<KeycloakSettings>(builder.Configuration.GetSection("Keycloak"));
 
 builder.Services.AddAuthorization();
 
