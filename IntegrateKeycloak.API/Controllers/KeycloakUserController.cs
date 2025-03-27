@@ -15,10 +15,17 @@ namespace IntegrateKeycloak.API.Controllers
         }
 
         [HttpGet]
-        public async Task<List<KeycloakUser>> GetUsers(string clientId)
+        public async Task<List<KeycloakUser>> GetUsers()
         {
-           return await _keycloakUserService.GetUsersWithRolesAsync(clientId);
+           return await _keycloakUserService.GetUsersWithRolesAsync();
             ///return Ok(users);
+        }
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetUserById(string userId)
+        {
+            var user = await _keycloakUserService.GetUserByIdAsync(userId);
+            if (user == null) return NotFound();
+            return Ok(user);
         }
 
         [HttpPost]
@@ -29,10 +36,10 @@ namespace IntegrateKeycloak.API.Controllers
             return Ok("Utilisateur créé avec succès.");
         }
 
-        [HttpPut("{userId}")]
-        public async Task<IActionResult> UpdateUser(string userId, [FromBody] KeycloakUser user)
+        [HttpPut]
+        public async Task<IActionResult> UpdateUser([FromBody] UpdateUserDto updatedUser)
         {
-            var success = await _keycloakUserService.UpdateUserAsync(userId, user);
+            var success = await _keycloakUserService.UpdateUserAsync(updatedUser);
             if (!success) return BadRequest("Échec de la mise à jour de l'utilisateur.");
             return Ok("Utilisateur mis à jour.");
         }

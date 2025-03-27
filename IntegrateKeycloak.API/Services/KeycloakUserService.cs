@@ -120,8 +120,6 @@
 //            return users;
 //        }
 
-
-
 //        public async Task<bool> CreateUserWithRole(UserCreationDto newUser, string roleName)
 //        {
 //            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _adminToken);
@@ -172,7 +170,6 @@
 
 //            return true;
 //        }
-
 
 //        private string GenerateRandomPassword()
 //        {
@@ -264,29 +261,39 @@
 //    }
 //}
 
-using System.Net.Http.Headers;
-using System.Text;
-using System.Runtime;
-using static System.Net.WebRequestMethods;
-using System.Net.Http.Headers;
-using System.Text.Json;
-using System.Text;
 using Microsoft.Extensions.Options;
+using System.Net.Http.Headers;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
 
 namespace IntegrateKeycloak.API.Services
 {
-
     public class KeycloakUserService : IKeycloakUserService
     {
         private readonly HttpClient _httpClient;
         private readonly KeycloakSettings _keycloakSettings;
         private readonly string _token;
+        private readonly string _clientUUID;
 
         public KeycloakUserService(HttpClient httpClient, IOptions<KeycloakSettings> keycloakOptions)
         {
             _httpClient = httpClient;
             _keycloakSettings = keycloakOptions.Value;
-            _token = GetAdminTokenAsync().Result; // ⚠️ Idéalement, stocker en cache pour éviter l'appel à chaque requête.
+            _token = GetAdminTokenAsync().Result;
+            _clientUUID = GetClientUUIDAsync().Result;
+        }
+
+        public async Task<KeycloakUser?> GetUserByIdAsync(string userId)
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+            var response = await _httpClient.GetAsync($"{_keycloakSettings.BaseUrl}/admin/realms/{_keycloakSettings.Realm}/users/{userId}");
+
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            var content = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<KeycloakUser>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
 
         private async Task<string> GetAdminTokenAsync()
@@ -320,13 +327,13 @@ namespace IntegrateKeycloak.API.Services
             return JsonSerializer.Deserialize<List<KeycloakUser>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<KeycloakUser>();
         }
 
-        public async Task<List<KeycloakUser>> GetUsersWithRolesAsync(string clientId)
+        public async Task<List<KeycloakUser>> GetUsersWithRolesAsync()
         {
             var users = await GetUsersAsync();
             foreach (var user in users) user.Roles = new List<RoleDto>();
 
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
-            var rolesResponse = await _httpClient.GetAsync($"{_keycloakSettings.BaseUrl}/admin/realms/{_keycloakSettings.Realm}/clients/{clientId}/roles");
+            var rolesResponse = await _httpClient.GetAsync($"{_keycloakSettings.BaseUrl}/admin/realms/{_keycloakSettings.Realm}/clients/{_clientUUID}/roles");
 
             if (!rolesResponse.IsSuccessStatusCode) return users;
 
@@ -335,7 +342,7 @@ namespace IntegrateKeycloak.API.Services
 
             foreach (var role in roles)
             {
-                var roleUsersResponse = await _httpClient.GetAsync($"{_keycloakSettings.BaseUrl}/admin/realms/{_keycloakSettings.Realm}/clients/{clientId}/roles/{role.name}/users");
+                var roleUsersResponse = await _httpClient.GetAsync($"{_keycloakSettings.BaseUrl}/admin/realms/{_keycloakSettings.Realm}/clients/{_clientUUID}/roles/{role.name}/users");
                 if (!roleUsersResponse.IsSuccessStatusCode) continue;
 
                 var roleUsersJson = await roleUsersResponse.Content.ReadAsStringAsync();
@@ -353,12 +360,36 @@ namespace IntegrateKeycloak.API.Services
             return users;
         }
 
+        private string GenerateTemporaryPassword()
+        {
+            const string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+            var password = new char[10]; // Taille entre 8 et 12 caractères
+
+            using var rng = RandomNumberGenerator.Create();
+            var bytes = new byte[password.Length];
+
+            rng.GetBytes(bytes);
+
+            for (int i = 0; i < password.Length; i++)
+            {
+                password[i] = validChars[bytes[i] % validChars.Length];
+            }
+
+            return new string(password);
+        }
+
         public async Task<bool> CreateUserWithRoleAsync(UserCreationDto newUser, string roleName)
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
-            newUser.Credentials = new List<CredentialDto> { new() { Type = "password", Value = "Temp@1234", Temporary = true } };
+            string tempPassword = GenerateTemporaryPassword();
+            newUser.Credentials = new List<CredentialDto> { new() { Type = "password", Value = tempPassword, Temporary = true } };
+            var jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+            };
 
-            var jsonContent = new StringContent(JsonSerializer.Serialize(newUser), Encoding.UTF8, "application/json");
+            var jsonContent = new StringContent(JsonSerializer.Serialize(newUser, jsonOptions), Encoding.UTF8, "application/json");
             var userResponse = await _httpClient.PostAsync($"{_keycloakSettings.BaseUrl}/admin/realms/{_keycloakSettings.Realm}/users", jsonContent);
 
             if (!userResponse.IsSuccessStatusCode) return false;
@@ -367,11 +398,23 @@ namespace IntegrateKeycloak.API.Services
             return userId != null && await AssignRoleToUserAsync(userId, roleName);
         }
 
-        public async Task<bool> UpdateUserAsync(string userId, KeycloakUser user)
+        public async Task<bool> UpdateUserAsync(UpdateUserDto updatedUser)
         {
+            if (string.IsNullOrWhiteSpace(updatedUser.Id))
+                throw new ArgumentException("L'ID de l'utilisateur est requis.");
+
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
-            var jsonContent = new StringContent(JsonSerializer.Serialize(user), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PutAsync($"{_keycloakSettings.BaseUrl}/admin/realms/{_keycloakSettings.Realm}/users/{userId}", jsonContent);
+
+            var jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+            };
+
+            var jsonContent = new StringContent(JsonSerializer.Serialize(updatedUser, jsonOptions), Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PutAsync($"{_keycloakSettings.BaseUrl}/admin/realms/{_keycloakSettings.Realm}/users/{updatedUser.Id}", jsonContent);
+
             return response.IsSuccessStatusCode;
         }
 
@@ -386,8 +429,7 @@ namespace IntegrateKeycloak.API.Services
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
 
-            var clientUUID = await GetClientUUIDAsync(_keycloakSettings.ClientId);
-            var getRoleResponse = await _httpClient.GetAsync($"{_keycloakSettings.BaseUrl}/admin/realms/{_keycloakSettings.Realm}/clients/{clientUUID}/roles/{roleName}");
+            var getRoleResponse = await _httpClient.GetAsync($"{_keycloakSettings.BaseUrl}/admin/realms/{_keycloakSettings.Realm}/clients/{_clientUUID}/roles/{roleName}");
 
             if (!getRoleResponse.IsSuccessStatusCode) return false;
 
@@ -395,26 +437,98 @@ namespace IntegrateKeycloak.API.Services
             if (role == null) return false;
 
             var assignRoleJson = new StringContent(JsonSerializer.Serialize(new[] { role }), Encoding.UTF8, "application/json");
-            var assignRoleResponse = await _httpClient.PostAsync($"{_keycloakSettings.BaseUrl}/admin/realms/{_keycloakSettings.Realm}/users/{userId}/role-mappings/clients/{clientUUID}", assignRoleJson);
+            var assignRoleResponse = await _httpClient.PostAsync($"{_keycloakSettings.BaseUrl}/admin/realms/{_keycloakSettings.Realm}/users/{userId}/role-mappings/clients/{_clientUUID}", assignRoleJson);
 
             return assignRoleResponse.IsSuccessStatusCode;
         }
 
-        private async Task<string> GetClientUUIDAsync(string clientId)
+        private async Task<string> GetClientUUIDAsync()
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
             var response = await _httpClient.GetAsync($"{_keycloakSettings.BaseUrl}/admin/realms/{_keycloakSettings.Realm}/clients");
 
-            if (!response.IsSuccessStatusCode) throw new Exception("Erreur lors de la récupération des clients Keycloak");
+            if (!response.IsSuccessStatusCode)
+                throw new Exception("Erreur lors de la récupération des clients Keycloak");
 
-            var clients = JsonSerializer.Deserialize<List<ClientDto>>(await response.Content.ReadAsStringAsync());
-            return clients?.FirstOrDefault(c => c.ClientId == clientId)?.Id ?? throw new Exception($"Client '{clientId}' non trouvé");
+            var clientsJson = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"Clients reçus de Keycloak : {clientsJson}");
+            var clients = JsonSerializer.Deserialize<List<ClientDto>>(clientsJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            var client = clients?.FirstOrDefault(c => c.ClientId == _keycloakSettings.ClientId);
+            if (client == null)
+                throw new Exception($"Client '{_keycloakSettings.ClientId}' non trouvé. Vérifiez si l'ID est correct.");
+
+            return client.Id;
         }
-        public class ClientDto
+
+        public async Task<bool> CreateRoleAsync(string roleName, string description)
         {
-            public string Id { get; set; } // L'UUID du client
-            public string ClientId { get; set; } // Le nom unique du client
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+
+            var role = new
+            {
+                name = roleName,
+                description = description
+            };
+            var jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+            };
+            var jsonContent = new StringContent(JsonSerializer.Serialize(role, jsonOptions), Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync($"{_keycloakSettings.BaseUrl}/admin/realms/{_keycloakSettings.Realm}/clients/{_clientUUID}/roles", jsonContent);
+
+            if (!response.IsSuccessStatusCode)
+                throw new Exception("Erreur lors de la création du rôle");
+
+            return true;
+        }
+
+        public async Task<List<RoleDto>> GetRolesAsync()
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+
+            var response = await _httpClient.GetAsync($"{_keycloakSettings.BaseUrl}/admin/realms/{_keycloakSettings.Realm}/clients/{_clientUUID}/roles");
+
+            if (!response.IsSuccessStatusCode)
+                throw new Exception("Erreur lors de la récupération des rôles");
+
+            var content = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<List<RoleDto>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<RoleDto>();
+        }
+
+        public async Task<bool> UpdateRoleAsync(string roleName, string newRoleName, string newDescription)
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+
+            var roleUpdate = new
+            {
+                name = newRoleName,
+                description = newDescription
+            };
+            var jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+            };
+            var jsonContent = new StringContent(JsonSerializer.Serialize(roleUpdate, jsonOptions), Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PutAsync(
+                $"{_keycloakSettings.BaseUrl}/admin/realms/{_keycloakSettings.Realm}/clients/{_clientUUID}/roles/{roleName}",
+                jsonContent);
+
+            return response.IsSuccessStatusCode;
+        }
+
+
+        public async Task<bool> DeleteRoleAsync(string roleName)
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+
+            var response = await _httpClient.DeleteAsync($"{_keycloakSettings.BaseUrl}/admin/realms/{_keycloakSettings.Realm}/clients/{_clientUUID}/roles/{roleName}");
+
+            return response.IsSuccessStatusCode;
         }
     }
-
 }
