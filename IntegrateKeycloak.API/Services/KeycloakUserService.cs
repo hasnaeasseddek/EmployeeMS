@@ -261,6 +261,7 @@
 //    }
 //}
 
+using IntegrateKeycloak.API.Infra;
 using Microsoft.Extensions.Options;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
@@ -273,15 +274,17 @@ namespace IntegrateKeycloak.API.Services
     {
         private readonly HttpClient _httpClient;
         private readonly KeycloakSettings _keycloakSettings;
+        private readonly IEmailS _emailS;
         private readonly string _token;
         private readonly string _clientUUID;
 
-        public KeycloakUserService(HttpClient httpClient, IOptions<KeycloakSettings> keycloakOptions)
+        public KeycloakUserService(HttpClient httpClient, IOptions<KeycloakSettings> keycloakOptions, IEmailS emailS)
         {
             _httpClient = httpClient;
             _keycloakSettings = keycloakOptions.Value;
             _token = GetAdminTokenAsync().Result;
             _clientUUID = GetClientUUIDAsync().Result;
+            _emailS = emailS;
         }
 
         public async Task<KeycloakUser?> GetUserByIdAsync(string userId)
@@ -363,7 +366,7 @@ namespace IntegrateKeycloak.API.Services
         private string GenerateTemporaryPassword()
         {
             const string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
-            var password = new char[10]; // Taille entre 8 et 12 caractères
+            var password = new char[10];
 
             using var rng = RandomNumberGenerator.Create();
             var bytes = new byte[password.Length];
@@ -381,8 +384,13 @@ namespace IntegrateKeycloak.API.Services
         public async Task<bool> CreateUserWithRoleAsync(UserCreationDto newUser, string roleName)
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+
             string tempPassword = GenerateTemporaryPassword();
-            newUser.Credentials = new List<CredentialDto> { new() { Type = "password", Value = tempPassword, Temporary = true } };
+            newUser.Credentials = new List<CredentialDto>
+    {
+        new() { Type = "password", Value = tempPassword, Temporary = true }
+    };
+
             var jsonOptions = new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -390,12 +398,32 @@ namespace IntegrateKeycloak.API.Services
             };
 
             var jsonContent = new StringContent(JsonSerializer.Serialize(newUser, jsonOptions), Encoding.UTF8, "application/json");
-            var userResponse = await _httpClient.PostAsync($"{_keycloakSettings.BaseUrl}/admin/realms/{_keycloakSettings.Realm}/users", jsonContent);
+
+            var userResponse = await _httpClient.PostAsync(
+                $"{_keycloakSettings.BaseUrl}/admin/realms/{_keycloakSettings.Realm}/users",
+                jsonContent
+            );
 
             if (!userResponse.IsSuccessStatusCode) return false;
 
             var userId = userResponse.Headers.Location?.ToString().Split('/').Last();
-            return userId != null && await AssignRoleToUserAsync(userId, roleName);
+            if (userId == null) return false;
+
+            bool roleAssigned = await AssignRoleToUserAsync(userId, roleName);
+            if (!roleAssigned) return false;
+
+            await SendTemporaryPasswordEmailAsync(newUser.Email, tempPassword);
+
+            return true;
+        }
+
+        // 🔹 Nouvelle méthode pour envoyer l'email proprement (async)
+        private async Task SendTemporaryPasswordEmailAsync(string email, string tempPassword)
+        {
+            string subject = "Votre mot de passe temporaire";
+            string message = $"Votre compte a été créé avec succès. Voici votre mot de passe temporaire : {tempPassword}\nVeuillez le modifier après votre première connexion.";
+
+            await _emailS.SendEmail(email, subject, message);
         }
 
         public async Task<bool> UpdateUserAsync(UpdateUserDto updatedUser)
@@ -520,7 +548,6 @@ namespace IntegrateKeycloak.API.Services
 
             return response.IsSuccessStatusCode;
         }
-
 
         public async Task<bool> DeleteRoleAsync(string roleName)
         {

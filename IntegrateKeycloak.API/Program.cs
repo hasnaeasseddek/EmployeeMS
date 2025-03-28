@@ -1,5 +1,7 @@
+using IntegrateKeycloak.API.Infra;
 using IntegrateKeycloak.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,7 +29,9 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddHttpClient<IKeycloakUserService, KeycloakUserService>();
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddTransient<IEmailService, EmailService>();
+builder.Services.AddTransient<IEmailS, EmailS>();
 builder.Services.Configure<KeycloakSettings>(builder.Configuration.GetSection("Keycloak"));
+builder.Services.AddDbContext<ApplicationDbContext>(op => op.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddAuthorization();
 
@@ -35,6 +39,14 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("create_employee", policy =>
+        policy.RequireClaim("permission", "create_employee"));
+
+    options.AddPolicy("delete_employee", policy =>
+        policy.RequireClaim("permission", "delete_employee"));
+});
 
 var app = builder.Build();
 
@@ -48,6 +60,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+app.UseMiddleware<PermissionMiddleware>();
 
 app.MapControllers();
 
