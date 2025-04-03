@@ -150,6 +150,38 @@
             toast.show();
         }
     </script>
+<script>
+    function submitUser() {
+        let user = {
+            username: document.getElementById("username").value,
+            firstName: document.getElementById("firstName").value,
+            lastName: document.getElementById("lastName").value,
+            email: document.getElementById("email").value,
+            enabled: true,
+            emailVerified: true
+        };
+        let role = document.getElementById("role").value;
+
+        fetch(`/Dashboard/AddUser?role=${role}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(user)
+        })
+            .then(response => {
+                if (response.ok) {
+                    showToast(); // Affiche la notification Bootstrap
+                    document.getElementById("addUserForm").reset();
+                    setTimeout(() => location.reload(), 2000);
+                } else {
+                    alert("Erreur lors de l'ajout de l'utilisateur.");
+                }
+            })
+            .catch(error => console.error("Erreur:", error));
+    }
+
+</script>
     <script>
         function deleteUser(userId) {
             Swal.fire({
@@ -293,38 +325,7 @@
                 .catch(error => console.error("Erreur:", error));
         }
     </script>
-    <script>
-        function submitUser() {
-            let user = {
-                username: document.getElementById("username").value,
-                firstName: document.getElementById("firstName").value,
-                lastName: document.getElementById("lastName").value,
-                email: document.getElementById("email").value,
-                enabled: true,
-                emailVerified: true
-            };
-            let role = document.getElementById("role").value;
-
-            fetch(`/Dashboard/AddUser?role=${role}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(user)
-            })
-                .then(response => {
-                    if (response.ok) {
-                        showToast(); // Affiche la notification Bootstrap
-                        document.getElementById("addUserForm").reset();
-                        setTimeout(() => location.reload(), 2000);
-                    } else {
-                        alert("Erreur lors de l'ajout de l'utilisateur.");
-                    }
-                })
-                .catch(error => console.error("Erreur:", error));
-        }
-
-    </script>
+    
 
     <script>
         function showDeleteToast() {

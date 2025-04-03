@@ -4,11 +4,11 @@ using MimeKit;
 
 namespace IntegrateKeycloak.API.Services
 {
-    public class EmailService : IEmailService
+    public class EmailSevices : IEmailService
     {
         private readonly EmailSettings _emailSettings;
 
-        public EmailService(IOptions<EmailSettings> emailSettings)
+        public EmailSevices(IOptions<EmailSettings> emailSettings)
         {
             _emailSettings = emailSettings.Value;
         }

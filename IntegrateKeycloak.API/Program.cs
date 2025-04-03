@@ -28,7 +28,7 @@ builder.Services.AddAuthentication(options =>
 });
 builder.Services.AddHttpClient<IKeycloakUserService, KeycloakUserService>();
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
-builder.Services.AddTransient<IEmailService, EmailService>();
+builder.Services.AddTransient<IEmailService, EmailSevices>();
 builder.Services.AddTransient<IEmailS, EmailS>();
 builder.Services.Configure<KeycloakSettings>(builder.Configuration.GetSection("Keycloak"));
 //builder.Services.AddDbContext<ApplicationDbContext>(op => op.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
