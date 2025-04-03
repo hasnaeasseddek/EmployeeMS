@@ -31,7 +31,7 @@ builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Emai
 builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.AddTransient<IEmailS, EmailS>();
 builder.Services.Configure<KeycloakSettings>(builder.Configuration.GetSection("Keycloak"));
-builder.Services.AddDbContext<ApplicationDbContext>(op => op.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+//builder.Services.AddDbContext<ApplicationDbContext>(op => op.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddAuthorization();
 
@@ -60,7 +60,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-app.UseMiddleware<PermissionMiddleware>();
 
 app.MapControllers();
 

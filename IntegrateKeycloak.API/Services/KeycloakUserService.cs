@@ -557,5 +557,49 @@ namespace IntegrateKeycloak.API.Services
 
             return response.IsSuccessStatusCode;
         }
+
+        public async Task<bool> UpdateUserRolesAsync(UpdateUserRolesDto request)
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+
+            // 🔹 1. Supprimer les rôles existants
+            bool removed = await RemoveAllRolesFromUserAsync(request.UserId);
+            if (!removed) return false;
+
+            // 🔹 2. Ajouter les nouveaux rôles
+            foreach (var role in request.Roles)
+            {
+                bool assigned = await AssignRoleToUserAsync(request.UserId, role);
+                if (!assigned) return false;
+            }
+
+            return true;
+        }
+        private async Task<bool> RemoveAllRolesFromUserAsync(string userId)
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+
+            var response = await _httpClient.GetAsync(
+                $"{_keycloakSettings.BaseUrl}/admin/realms/{_keycloakSettings.Realm}/users/{userId}/role-mappings/clients/{_clientUUID}"
+            );
+
+            if (!response.IsSuccessStatusCode)
+                return false;
+
+            var rolesJson = await response.Content.ReadAsStringAsync();
+            var roles = JsonSerializer.Deserialize<List<RoleDto>>(rolesJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            if (roles == null || roles.Count == 0)
+                return true;
+
+            var removeRolesJson = new StringContent(JsonSerializer.Serialize(roles), Encoding.UTF8, "application/json");
+            var deleteResponse = await _httpClient.DeleteAsync(
+                $"{_keycloakSettings.BaseUrl}/admin/realms/{_keycloakSettings.Realm}/users/{userId}/role-mappings/clients/{_clientUUID}"
+            );
+
+            return deleteResponse.IsSuccessStatusCode;
+        }
+
+
     }
 }

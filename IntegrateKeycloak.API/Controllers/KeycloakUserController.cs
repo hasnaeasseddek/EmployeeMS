@@ -58,6 +58,19 @@ namespace IntegrateKeycloak.API.Controllers
             if (!success) return BadRequest("Échec de l'assignation du rôle.");
             return Ok("Rôle assigné avec succès.");
         }
+        [HttpPut("users/roles")]
+        public async Task<IActionResult> UpdateUserRoles([FromBody] UpdateUserRolesDto updateUserRolesDto)
+        {
+            if (string.IsNullOrWhiteSpace(updateUserRolesDto.UserId) || updateUserRolesDto.Roles == null)
+                return BadRequest("L'ID de l'utilisateur et la liste des rôles sont requis.");
+
+            var success = await _keycloakUserService.UpdateUserRolesAsync(updateUserRolesDto);
+
+            if (!success)
+                return StatusCode(500, "Erreur lors de la mise à jour des rôles.");
+
+            return Ok("Les rôles de l'utilisateur ont été mis à jour avec succès.");
+        }
 
     }
 }

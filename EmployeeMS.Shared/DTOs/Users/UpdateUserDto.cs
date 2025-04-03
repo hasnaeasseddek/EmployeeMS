@@ -1,4 +1,10 @@
-﻿namespace IntegrateKeycloak.API.Services
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace EmployeeMS.Shared.DTOs.Users
 {
     public class UpdateUserDto
     {
@@ -7,6 +13,6 @@
         public string LastName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public bool Enabled { get; set; }
-        
+
     }
 }

@@ -1,0 +1,360 @@
+﻿@model DashboardViewModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<h2 class="mt-4">Admin Dashboard</h2>
+
+<!-- Statistics Cards -->
+<div class="row">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white p-3">
+            <h5>Total Users</h5>
+            <h3>@Model.TotalUsers</h3>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white p-3">
+            <h5>Admins</h5>
+            <h3>@Model.AdminsCount</h3>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-dark p-3">
+            <h5>Employees</h5>
+            <h3>@Model.EmployeesCount</h3>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-danger text-white p-3">
+            <h5>Visitors</h5>
+            <h3>@Model.VisitorsCount</h3>
+        </div>
+    </div>
+</div>
+
+<!-- Users Table -->
+<h3 class="mt-4">Users List</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nom d'utilisateur</th>
+            <th>Nom</th>
+            <th>Email</th>
+            <th>Rôle</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model.Users)
+        {
+            <tr id="userRow-@user.Id">
+                <td>@user.Username</td>
+                <td>@user.FirstName @user.LastName</td>
+                <td>@user.Email</td>
+                <td>
+                    @foreach (var role in user.Roles)
+                    {
+                        <span class="badge bg-primary">@role.name</span>
+                    }
+                </td>
+                <td>
+                    <button class="btn btn-danger btn-sm" onclick="deleteUser('@user.Id')">Supprimer</button>
+                    <button class="btn btn-warning btn-sm" onclick="editUser('@user.Id', '@user.FirstName', '@user.LastName', '@user.Email')">Modifier</button>
+                    <button class="btn btn-info btn-sm" onclick="editUserRoles('@user.Id', '@string.Join(",", user.Roles.Select(r => r.name))')">Modifier les rôles</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Button to trigger modal -->
+<button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addUserModal">➕ Ajouter un utilisateur</button>
+
+<!-- Modal for Adding User -->
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addUserModalLabel">Ajouter un utilisateur</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addUserForm">
+                    <div class="mb-3">
+                        <label class="form-label">Nom d'utilisateur</label>
+                        <input type="text" class="form-control" id="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Prénom</label>
+                        <input type="text" class="form-control" id="firstName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nom</label>
+                        <input type="text" class="form-control" id="lastName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Rôle</label>
+                        <select class="form-select" id="role">
+                            <option value="visitor">Visitor</option>
+                            <option value="admin">Admin</option>
+                            <option value="employee">Employé</option>
+                        </select>
+                    </div>
+                    <button type="button" class="btn btn-success" onclick="submitUser()">Ajouter</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // JavaScript functions for adding/editing users
+</script>
+
+
+
+    
+
+    
+    <!-- Toast Notification -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    Utilisateur ajouté avec succès !
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+    <!-- Toast Notification -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="deleteToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    Utilisateur supprimé avec succès !
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+    <script>
+        function showToast() {
+            let toastElement = document.getElementById("successToast");
+            let toast = new bootstrap.Toast(toastElement);
+            toast.show();
+        }
+    </script>
+    <script>
+        function deleteUser(userId) {
+            Swal.fire({
+                title: "Êtes-vous sûr ?",
+                text: "Cette action est irréversible !",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Oui, supprimer",
+                cancelButtonText: "Annuler"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/Dashboard/DeleteUser?id=${userId}`, {
+                        method: "DELETE"
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                document.getElementById(`userRow-${userId}`).remove(); // Supprime la ligne du tableau
+                                showDeleteToast(); // Affiche la notification Bootstrap
+                            } else {
+                                Swal.fire("Erreur", "Impossible de supprimer l'utilisateur.", "error");
+                            }
+                        })
+                        .catch(error => console.error("Erreur:", error));
+                }
+            });
+        }
+    </script>
+    <script>
+        function editUser(userId, firstName, lastName, email, enabled) {
+            Swal.fire({
+                title: "Modifier l'utilisateur",
+                html: `
+                    <input id="firstNamea" class="swal2-input" placeholder="Prénom" value="${firstName}">
+                    <input id="lastNamea" class="swal2-input" placeholder="Nom" value="${lastName}">
+                    <input id="emaila" class="swal2-input" placeholder="Email" value="${email}">
+                    <select id="enabled" class="swal2-select">
+                        <option value="true" ${enabled ? "selected" : ""}>Activé</option>
+                        <option value="false" ${!enabled ? "selected" : ""}>Désactivé</option>
+                    </select>
+                `,
+                showCancelButton: true,
+                confirmButtonText: "Enregistrer",
+                cancelButtonText: "Annuler",
+                preConfirm: (user) => {
+                    let updatedFirstName = document.getElementById("firstNamea").value.trim();
+                    let updatedLastName = document.getElementById("lastNamea").value.trim();
+                    let updatedEmail = document.getElementById("emaila").value.trim();
+                    let updatedEnabled = document.getElementById("enabled").value === "true";
+
+                    // Ajoutez des logs pour vérifier les valeurs
+                    console.log("Prénom:", updatedFirstName);
+                    console.log("Nom:", updatedLastName);
+                    console.log("Email:", updatedEmail);
+                    console.log("Activé:", updatedEnabled);
+
+                    // Vérifiez si les valeurs sont valides
+                    if (!updatedFirstName || !updatedLastName || !updatedEmail) {
+                        Swal.showValidationMessage("Tous les champs doivent être remplis.");
+                        return false;
+                    }
+
+                    return {
+                        id: userId,
+                        firstName: updatedFirstName,
+                        lastName: updatedLastName,
+                        email: updatedEmail,
+                        enabled: updatedEnabled
+                    };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    console.log("Données envoyées :", result.value); // Vérifier dans la console
+                    updateUser(result.value);
+                }
+            });
+        }
+
+
+
+
+        function updateUser(user) {
+            console.log("Données avant l'envoi :", JSON.stringify(user));
+
+            fetch("/Dashboard/UpdateUser", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(user)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        Swal.fire("Succès", "Utilisateur mis à jour avec succès.", "success")
+                            .then(() => location.reload());
+                    } else {
+                        Swal.fire("Erreur", "Impossible de mettre à jour l'utilisateur.", "error");
+                    }
+                })
+                .catch(error => console.error("Erreur:", error));
+        }
+
+
+    </script>
+    <script>
+        function editUserRoles(userId, currentRoles) {
+            Swal.fire({
+                title: "Modifier les rôles",
+                input: "text",
+                inputLabel: "Saisissez les rôles séparés par une virgule",
+                inputValue: currentRoles,
+                showCancelButton: true,
+                confirmButtonText: "Enregistrer",
+                cancelButtonText: "Annuler",
+                preConfirm: (roles) => {
+                    return {
+                        userId: userId,
+                        roles: roles.split(",").map(r => r.trim())
+                    };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    updateUserRoles(result.value);
+                }
+            });
+        }
+
+        function updateUserRoles(userRoles) {
+            fetch("/Dashboard/UpdateUserRoles", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(userRoles)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        Swal.fire("Succès", "Rôles mis à jour avec succès.", "success")
+                            .then(() => location.reload());
+                    } else {
+                        Swal.fire("Erreur", "Impossible de mettre à jour les rôles.", "error");
+                    }
+                })
+                .catch(error => console.error("Erreur:", error));
+        }
+    </script>
+    <script>
+        function submitUser() {
+            let user = {
+                username: document.getElementById("username").value,
+                firstName: document.getElementById("firstName").value,
+                lastName: document.getElementById("lastName").value,
+                email: document.getElementById("email").value,
+                enabled: true,
+                emailVerified: true
+            };
+            let role = document.getElementById("role").value;
+
+            fetch(`/Dashboard/AddUser?role=${role}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(user)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        showToast(); // Affiche la notification Bootstrap
+                        document.getElementById("addUserForm").reset();
+                        setTimeout(() => location.reload(), 2000);
+                    } else {
+                        alert("Erreur lors de l'ajout de l'utilisateur.");
+                    }
+                })
+                .catch(error => console.error("Erreur:", error));
+        }
+
+    </script>
+
+    <script>
+        function showDeleteToast() {
+            let toastElement = document.getElementById("deleteToast");
+            let toast = new bootstrap.Toast(toastElement);
+            toast.show();
+        }
+    </script>
+    <script>
+        function loadContent(type) {
+            let url = "";
+
+            if (type === 'home') {
+                document.getElementById('content-area').innerHTML = "<h2>Bienvenue sur le Dashboard</h2><p>Sélectionnez une option dans le menu.</p>";
+                return;
+            } else if (type === 'employees') {
+                document.getElementById('content-area').innerHTML = "<h2>Gestion des Employés</h2><p>Contenu des employés...</p>";
+                return;
+            } else if (type === 'roles') {
+                url = "/Roles/LoadRoles";
+            }
+
+            fetch(url)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('content-area').innerHTML = html;
+                })
+                .catch(error => console.error('Erreur de chargement :', error));
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+

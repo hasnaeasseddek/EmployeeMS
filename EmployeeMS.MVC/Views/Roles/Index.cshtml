@@ -1,0 +1,119 @@
+﻿@using EmployeeMS.Shared.DTOs.Role
+@model List<RoleDto>
+
+<div class="container mt-4">
+    <h2 class="mb-3">Gestion des Rôles</h2>
+
+    <table class="table table-bordered table-hover">
+        <thead class="bg-dark text-white">
+            <tr>
+                <th>Nom du Rôle</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var role in Model)
+            {
+                <tr>
+                    <td>@role.name</td>
+                    <td>
+                        <a href="#" class="btn btn-warning btn-sm">✏️ Modifier</a>
+                        <a href="#" class="btn btn-danger btn-sm">🗑️ Supprimer</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <!-- Button to trigger modal for role addition -->
+    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addRoleModal">➕ Ajouter un rôle</button>
+    <!-- Modal for Adding Role -->
+    <div class="modal fade" id="addRoleModal" tabindex="-1" aria-labelledby="addRoleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addRoleModalLabel">Ajouter un rôle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addRoleForm">
+                        <div class="mb-3">
+                            <label class="form-label">Nom du rôle</label>
+                            <input type="text" class="form-control" id="roleName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <input type="text" class="form-control" id="roleDescription" required>
+                        </div>
+                        <button type="button" class="btn btn-success" onclick="submitRole()">Ajouter</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Toast Notification for Success -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    Rôle ajouté avec succès !
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification for Error -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="errorToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    Erreur lors de l'ajout du rôle.
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+<script>
+        function submitRole() {
+            let roleName = document.getElementById("roleName").value;
+            let roleDescription = document.getElementById("roleDescription").value;
+
+            // Vérification des champs
+            if (!roleName || !roleDescription) {
+                alert("Veuillez remplir tous les champs.");
+                return;
+            }
+
+            fetch(`https://localhost:7034/api/KeycloakRole?roleName=${encodeURIComponent(roleName)}&description=${encodeURIComponent(roleDescription)}`, {
+                method: "POST"
+            })
+                .then(response => {
+                    if (response.ok) {
+                        showToast("Rôle ajouté avec succès !", "success");
+                        document.getElementById("addRoleForm").reset(); // Réinitialiser le formulaire
+                        setTimeout(() => location.reload(), 2000); // Recharger la page après 2 secondes
+                    } else {
+                        throw new Error("Erreur lors de la requête.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Erreur:", error);
+                    showToast("Erreur de serveur.", "error");
+                });
+
+
+        }
+
+        function showToast(message, type) {
+            let toastElement = document.getElementById("successToast");
+            if (type === "error") {
+                toastElement = document.getElementById("errorToast");
+            }
+            let toast = new bootstrap.Toast(toastElement);
+            toastElement.querySelector(".toast-body").textContent = message;
+            toast.show();
+        }
+
+</script>
+</div>

@@ -8,12 +8,12 @@ namespace IntegrateKeycloak.API.Controllers
     [ApiController]
     public class EmployeeController : ControllerBase
     {
-        [Authorize(Policy = "create_employee")]
-        [HttpPost]
-        public async Task<ActionResult> CreateEmployee(string employee)
-        {
-            // Code pour créer l'employé
-        }
+        //[Authorize(Policy = "create_employee")]
+        //[HttpPost]
+        //public async Task<ActionResult> CreateEmployee(string employee)
+        //{
+        //    // Code pour créer l'employé
+        //}
 
     }
 }

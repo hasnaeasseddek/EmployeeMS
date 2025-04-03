@@ -13,6 +13,7 @@
         Task<bool> CreateRoleAsync(string roleName, string description);
         Task<List<RoleDto>> GetRolesAsync();
         Task<bool> DeleteRoleAsync(string roleId);
+        Task<bool> UpdateUserRolesAsync(UpdateUserRolesDto request);
 
         //Task<List<KeycloakUser>> GetUsers();
 
