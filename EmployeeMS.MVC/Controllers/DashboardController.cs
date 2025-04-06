@@ -27,7 +27,7 @@ namespace EmployeeMS.MVC.Controllers
                 TotalUsers = users.Count,
                 AdminsCount = users.Count(u => u.Roles.Any(r => r.name == "admin" || r.name == "Administrateur")),
                 EmployeesCount = users.Count(u => u.Roles.Any(r => r.name == "employe")),
-                VisitorsCount = users.Count(u => u.Roles.Any(r => r.name == "visitor")),
+                VisitorsCount = users.Count(u => u.Roles.Any(r => r.name == "chef_dep")),
                 Users = users
             };
 
