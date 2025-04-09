@@ -17,14 +17,30 @@ namespace EmployeeMS.Infrastructure
         public DbSet<LeaveRequest> leaveRequests { get; set; }
         public DbSet<Training> trainings { get; set; }
         public DbSet<EmployeeTraining> employeeTrainings { get; set; }
+        public DbSet<User> Users => Set<User>();
+        public DbSet<Role> Roles => Set<Role>();
+        public DbSet<Permission> Permissions => Set<Permission>();
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Roles)
+                .WithMany()
+                .UsingEntity(j => j.ToTable("UserRoles"));
+
+            modelBuilder.Entity<Role>()
+                .HasMany(r => r.Permissions)
+                .WithMany()
+                .UsingEntity(j => j.ToTable("RolePermissions"));
         }
+
+        
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             foreach (var entry in ChangeTracker.Entries<BaseDomainEntity>())

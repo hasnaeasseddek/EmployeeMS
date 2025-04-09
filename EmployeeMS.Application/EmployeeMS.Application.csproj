@@ -10,11 +10,18 @@
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="FluentValidation" Version="11.11.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\EmployeeMS.Domain\EmployeeMS.Domain.csproj" />
     <ProjectReference Include="..\EmployeeMS.Shared\EmployeeMS.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\Users\Handlers\Queries\" />
+    <Folder Include="Features\Users\Requests\Queries\" />
+    <Folder Include="Features\Users\Validators\" />
   </ItemGroup>
 
 </Project>

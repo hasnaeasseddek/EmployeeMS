@@ -1,5 +1,7 @@
 ﻿using EmployeeMS.Application.Contracts.Persistence;
+using EmployeeMS.Application.Interfaces;
 using EmployeeMS.Infrastructure.Repositories;
+using EmployeeMS.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,6 +25,9 @@ namespace EmployeeMS.Infrastructure
             services.AddScoped<ILeaveRequestRepository, LeaveRequestRepository>();
             services.AddScoped<IPositionRepository, PositionRepository>();
             services.AddScoped<ITrainingRepository, TrainingRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<IAuthService, AuthService>();
 
             return services;
         }
